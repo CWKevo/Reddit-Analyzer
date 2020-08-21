@@ -24,28 +24,28 @@ const { CommentStream } = require("snoostorm");
 const request = require("request");
 
 /* Fetch the knowledge base: */
-  let knowledgeBase;
+let knowledgeBase;
 
-  async function getJSON(url, callback) {
-    request(
-      {
-        url: url,
-        json: true
-      },
-      function(error, response, body) {
-        if (!error && response.statusCode === 200) {
-          callback(body);
-        }
+async function getJSON(url, callback) {
+  request(
+    {
+      url: url,
+      json: true
+    },
+    function(error, response, body) {
+      if (!error && response.statusCode === 200) {
+        callback(body);
       }
-    );
-  }
-
-  getJSON(
-    "http://raw.githubusercontent.com/CWKevo/Reddit-DoAnAnalysis/master/daa-knowledge-base.json",
-    async function(body) {
-      knowledgeBase = body;
     }
   );
+}
+
+getJSON(
+  "http://raw.githubusercontent.com/CWKevo/Reddit-DoAnAnalysis/master/daa-knowledge-base.json",
+  async function(body) {
+    knowledgeBase = body;
+  }
+);
 
 const Snoowrap = require("snoowrap");
 const Snoostorm = require("snoostorm");
@@ -63,8 +63,7 @@ const r = new Snoowrap({
 /* Create a stream that fetches the 10 results of the r/all every few seconds: */
 const stream = new CommentStream(r, {
   subreddit: "all",
-  results: 10,
-  pollTime: 10000
+  results: 25
 });
 
 /* Every time a comment gets added on subreddit: */
