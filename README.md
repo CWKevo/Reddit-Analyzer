@@ -8,3 +8,5 @@ The bot listens to the phrase "DoAnAnalysis" over Reddit (in `r/all`). If it reg
 *This bot is a side-project by me, and my first Reddit bot ever. It is experimental, and contains dumb source code. It should not be taken seriously, however I'm waiting until it gets taken down. 
 
 Source code is located in `source-code.js`.
+
+##### Currently, we have to fight weird rate-limits. Poor bot, needs more karma.
