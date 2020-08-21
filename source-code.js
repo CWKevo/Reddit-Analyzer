@@ -4,6 +4,21 @@ const awoken = Date.now() / 1000;
 // I know I can do comments like this, but
 /* this just looks nicer. */
 
+const express = require("express");
+const app = express();
+
+/* Send "OK" response: */
+app.get("/", async function(request, response) {
+  await response.sendStatus(200);
+});
+
+/* Send message about an app listening: */
+let listener = app.listen(process.env.PORT, async function() {
+  await console.log(
+    "Your app is listening on port " + listener.address().port + " :')"
+  );
+});
+
 const { CommentStream } = require("snoostorm");
 
 const request = require("request");
@@ -65,7 +80,8 @@ stream.on("item", async comment => {
       );
       /* ...reply with the subreddit information from the retrived JSON: */
       comment.reply(
-        knowledgeBase["subreddits"][comment.subreddit_name_prefixed]
+        knowledgeBase["subreddits"][comment.subreddit_name_prefixed] +
+          "\n\n^(I am a bot and this action was performed automatically | Check our) [^(GitHub repository)](https://github.com/CWKevo/Reddit-DoAnAnalysis) ^(to add your own descriptions to other subreddits.)"
       );
     } else if (!knowledgeBase["subreddits"][comment.subreddit_name_prefixed]) {
       console.log(
@@ -88,7 +104,10 @@ stream.on("item", async comment => {
           ")"
       );
       /* ...reply with the user information from the retrived JSON: */
-      comment.reply(knowledgeBase["users"]["u/" + comment.link_author]);
+      comment.reply(
+        knowledgeBase["users"]["u/" + comment.link_author] +
+          "\n\n^(I am a bot and this action was performed automatically | Check our) [^(GitHub repository)](https://github.com/CWKevo/Reddit-DoAnAnalysis) ^(to add your own descriptions to other subreddits.)"
+      );
     } else if (!knowledgeBase["users"]["u/" + comment.link_author]) {
       console.log(
         "u/" +
