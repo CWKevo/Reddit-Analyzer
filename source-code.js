@@ -106,7 +106,7 @@ inbox.on("item", async inbox => {
     );
     if (await knowledgeBase["users"]["u/" + inbox.author.name]) {
       await console.log(
-        inbox.link_author +
+        inbox.author.name +
           " is in my database. Sending reply (" +
           knowledgeBase["users"]["u/" + inbox.author.name] +
           ")"
