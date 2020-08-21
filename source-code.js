@@ -61,7 +61,7 @@ const r = new Snoowrap({
 });
 
 /* Create a stream that fetches the 10 results of the r/all every few seconds: */
-const stream = new CommentStream(r, { subreddit: "DoAnAnalysis", results: 10 });
+const stream = new CommentStream(r, { subreddit: "DoAnAnalysis", results: 10, pollTime: 10000 });
 
 /* Every time a comment gets added on subreddit: */
 stream.on("item", async comment => {
