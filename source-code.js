@@ -23,30 +23,6 @@ const { CommentStream } = require("snoostorm");
 
 const request = require("request");
 
-/* Fetch the knowledge base: */
-let knowledgeBase;
-
-function getJSON(url, callback) {
-  request(
-    {
-      url: url,
-      json: true
-    },
-    function(error, response, body) {
-      if (!error && response.statusCode === 200) {
-        callback(body);
-      }
-    }
-  );
-}
-
-getJSON(
-  "http://raw.githubusercontent.com/CWKevo/Reddit-DoAnAnalysis/master/daa-knowledge-base.json",
-  function(body) {
-    knowledgeBase = body;
-  }
-);
-
 const Snoowrap = require("snoowrap");
 const Snoostorm = require("snoostorm");
 
@@ -61,7 +37,11 @@ const r = new Snoowrap({
 });
 
 /* Create a stream that fetches the 10 results of the r/all every few seconds: */
-const stream = new CommentStream(r, { subreddit: "DoAnAnalysis", results: 10, pollTime: 10000 });
+const stream = new CommentStream(r, {
+  subreddit: "DoAnAnalysis",
+  results: 10,
+  pollTime: 10000
+});
 
 /* Every time a comment gets added on subreddit: */
 stream.on("item", async comment => {
@@ -69,9 +49,32 @@ stream.on("item", async comment => {
   /* Proceed only if the bot is mentioned: */
 
   if ((await comment.body) == "u/DoAnAnalysis") {
+    /* Fetch the knowledge base: */
+    let knowledgeBase;
+
+    function getJSON(url, callback) {
+      request(
+        {
+          url: url,
+          json: true
+        },
+        function(error, response, body) {
+          if (!error && response.statusCode === 200) {
+            callback(body);
+          }
+        }
+      );
+    }
+
+    getJSON(
+      "http://raw.githubusercontent.com/CWKevo/Reddit-DoAnAnalysis/master/daa-knowledge-base.json",
+      async function(body) {
+        knowledgeBase = body;
+      }
+    );
     console.log("I was mentioned.");
     /* If the subreddit is located in the bot's knowledge base... */
-    if (knowledgeBase["subreddits"][comment.subreddit_name_prefixed]) {
+    if (await knowledgeBase["subreddits"][comment.subreddit_name_prefixed]) {
       console.log(
         comment.subreddit_name_prefixed +
           " is in my database. Sending reply (" +
@@ -96,7 +99,30 @@ stream.on("item", async comment => {
 
   // This one is maybe taken way too far:
   if ((await comment.body) == "u/DoAnAnalysis author") {
-    if (knowledgeBase["users"]["u/" + comment.link_author]) {
+    /* Fetch the knowledge base: */
+    let knowledgeBase;
+
+    function getJSON(url, callback) {
+      request(
+        {
+          url: url,
+          json: true
+        },
+        function(error, response, body) {
+          if (!error && response.statusCode === 200) {
+            callback(body);
+          }
+        }
+      );
+    }
+
+    getJSON(
+      "http://raw.githubusercontent.com/CWKevo/Reddit-DoAnAnalysis/master/daa-knowledge-base.json",
+      async function(body) {
+        knowledgeBase = body;
+      }
+    );
+    if (await knowledgeBase["users"]["u/" + comment.link_author]) {
       console.log(
         comment.link_author +
           " is in my database. Sending reply (" +
