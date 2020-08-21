@@ -64,11 +64,9 @@ const r = new Snoowrap({
 const inbox = new InboxStream(r);
 inbox.on("item", async inbox => {
   /* Ignore all mentions that were created before the bot "awakened" (this prevents replying to old mentions before "now") */
-  if (
-    (await inbox.created_utc) < awoken ||
-    (await inbox.type) != "username_mention"
-  )
+  if ((await inbox.created_utc) < awoken) {
     return;
+  }
   if ((await inbox.body) == "u/DoAnAnalysis") {
     await console.log(
       "[https://reddit.com" + inbox.context + "] I was mentioned."
