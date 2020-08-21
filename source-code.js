@@ -62,7 +62,7 @@ const r = new Snoowrap({
 
 /* Create a stream that fetches the 10 results of the r/all every few seconds: */
 const stream = new CommentStream(r, {
-  subreddit: "DoAnAnalysis",
+  subreddit: "all",
   results: 10,
   pollTime: 10000
 });
