@@ -73,7 +73,7 @@ stream.on("item", async comment => {
   /* Proceed only if the bot is mentioned: */
 
   if ((await comment.body) == "u/DoAnAnalysis") {
-    await console.log("I was mentioned.");
+    await console.log("[" + comment.link_permalink + "] I was mentioned.");
     /* If the subreddit is located in the bot's knowledge base... */
     if (await knowledgeBase["subreddits"][comment.subreddit_name_prefixed]) {
       await console.log(
@@ -102,6 +102,7 @@ stream.on("item", async comment => {
 
   // This one is maybe taken way too far:
   if ((await comment.body) == "u/DoAnAnalysis author") {
+    await console.log("[" + comment.link_permalink + "] I was mentioned.");
     if (await knowledgeBase["users"]["u/" + comment.link_author]) {
       await console.log(
         comment.link_author +
