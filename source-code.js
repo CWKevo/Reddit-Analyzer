@@ -19,7 +19,7 @@ let listener = app.listen(process.env.PORT, async function() {
   );
 });
 
-const { CommentStream } = require("snoostorm");
+const { InboxStream } = require("snoostorm");
 
 const request = require("request");
 
@@ -60,67 +60,69 @@ const r = new Snoowrap({
   password: process.env.PASSWORD
 });
 
-/* Create a stream that fetches the 10 results of the r/all every few seconds: */
-const stream = new CommentStream(r, {
-  subreddit: "all",
-  results: 25
-});
-
-/* Every time a comment gets added on subreddit: */
-stream.on("item", async comment => {
-  if ((await comment.created_utc) < awoken) return;
-  /* Proceed only if the bot is mentioned: */
-
-  if ((await comment.body) == "u/DoAnAnalysis") {
-    await console.log("[" + comment.link_permalink + "] I was mentioned.");
+/* This creates a new InboxStream that fetches mentions from the inbox */
+const inbox = new InboxStream(r);
+inbox.on("item", async inbox => {
+  /* Ignore all mentions that were created before the bot "awakened" (this prevents replying to old mentions before "now") */
+  if (
+    (await inbox.created_utc) < awoken ||
+    (await inbox.type) != "username_mention"
+  )
+    return;
+  if ((await inbox.body) == "u/DoAnAnalysis") {
+    await console.log(
+      "[https://reddit.com" + inbox.context + "] I was mentioned."
+    );
     /* If the subreddit is located in the bot's knowledge base... */
-    if (await knowledgeBase["subreddits"][comment.subreddit_name_prefixed]) {
+    if (await knowledgeBase["subreddits"][inbox.subreddit_name_prefixed]) {
       await console.log(
-        comment.subreddit_name_prefixed +
+        inbox.subreddit_name_prefixed +
           " is in my database. Sending reply (" +
-          knowledgeBase["subreddits"][comment.subreddit_name_prefixed] +
+          knowledgeBase["subreddits"][inbox.subreddit_name_prefixed] +
           ")"
       );
       /* ...reply with the subreddit information from the retrived JSON: */
-      await comment.reply(
-        knowledgeBase["subreddits"][comment.subreddit_name_prefixed] +
+      await inbox.reply(
+        knowledgeBase["subreddits"][inbox.subreddit_name_prefixed] +
           "\n\n^(I am a bot and this action was performed automatically | Check our) [^(GitHub repository)](https://github.com/CWKevo/Reddit-DoAnAnalysis) ^(to add your own descriptions to other subreddits.)"
       );
     } else if (
-      await !knowledgeBase["subreddits"][comment.subreddit_name_prefixed]
+      await !knowledgeBase["subreddits"][inbox.subreddit_name_prefixed]
     ) {
       await console.log(
-        comment.subreddit_name_prefixed +
+        inbox.subreddit_name_prefixed +
           " is not in my database. Consider adding it to support more subreddits."
       );
-      await comment.reply(
+      await inbox.reply(
         "This subreddit is not in my database yet.\n\n^(Perhaps you can help adding a description for this subreddit? Check our) [^(GitHub repository)](https://github.com/CWKevo/Reddit-DoAnAnalysis) ^(| Love? Hate?) [^(Send feedback)](https://www.reddit.com/r/DoAnAnalysis)^(!)"
       );
     }
   }
 
   // This one is maybe taken way too far:
-  if ((await comment.body) == "u/DoAnAnalysis author") {
-    await console.log("[" + comment.link_permalink + "] I was mentioned.");
-    if (await knowledgeBase["users"]["u/" + comment.link_author]) {
+  if ((await inbox.body) == "u/DoAnAnalysis author") {
+    await console.log(
+      "[https://reddit.com" + inbox.context + "] I was mentioned."
+    );
+    if (await knowledgeBase["users"]["u/" + inbox.author.name]) {
       await console.log(
-        comment.link_author +
+        inbox.link_author +
           " is in my database. Sending reply (" +
-          knowledgeBase["users"]["u/" + comment.link_author] +
+          knowledgeBase["users"]["u/" + inbox.author.name] +
           ")"
       );
       /* ...reply with the user information from the retrived JSON: */
-      await comment.reply(
-        knowledgeBase["users"]["u/" + comment.link_author] +
+      await inbox.reply(
+        knowledgeBase["users"]["u/" + inbox.author.name] +
           "\n\n^(I am a bot and this action was performed automatically | Check our) [^(GitHub repository)](https://github.com/CWKevo/Reddit-DoAnAnalysis) ^(to add your own descriptions to other subreddits.)"
       );
-    } else if (await !knowledgeBase["users"]["u/" + comment.link_author]) {
+    } else if (await !knowledgeBase["users"]["u/" + inbox.author.name]) {
       await console.log(
         "u/" +
-          comment.link_author +
+          inbox.author.name +
           " is not in my database. Consider adding it to support more users."
       );
-      await comment.reply(
+      await inbox.reply(
         "This user is not in my database yet.\n\n^(Perhaps you can help adding a description for this user? Check our) [^(GitHub repository)](https://github.com/CWKevo/Reddit-DoAnAnalysis) ^(| Love? Hate?) [^(Send feedback)](https://www.reddit.com/r/DoAnAnalysis)^(!)"
       );
     }
