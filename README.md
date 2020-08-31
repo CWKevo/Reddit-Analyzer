@@ -1,4 +1,7 @@
-##### I'm currently looking for contributors, feel free to make a PR.
+> ---
+> ##### I'm currently looking for contributors, feel free to make a PR.
+>
+> ---
 
 # [u/CW_Analyzer](https://reddit.com/u/CW_Analyzer/)
 The knowledgebase of the "CW_Analyzer" Reddit bot.
