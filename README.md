@@ -13,5 +13,3 @@ The bot listens to itself being mentioned. If it registered the mention, it find
 *This bot is a side-project by me, and my first Reddit bot ever. It is experimental, and contains dumb source code. It should not be taken seriously, however I'm waiting until it gets taken down.*
 
 Source code is located in `source-code.js`.
-
-##### Currently, we have to fight weird rate-limits. Poor bot, needs more karma.
