@@ -32,7 +32,6 @@ async function getJSON(url, callback) {
 
 
 const Snoowrap = require("snoowrap");
-const Snoostorm = require("snoostorm");
 
 /* Create a Reddit user with credentials: */
 
