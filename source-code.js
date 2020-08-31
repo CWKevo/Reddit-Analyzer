@@ -53,7 +53,7 @@ const Snoostorm = require("snoostorm");
 /* Create a Reddit user with credentials: */
 
 const r = new Snoowrap({
-  userAgent: "do-an-analysis-bot",
+  userAgent: "cw-analyzer",
   clientId: process.env.CLIENT_ID,
   clientSecret: process.env.CLIENT_SECRET,
   username: process.env.USERNAME,
