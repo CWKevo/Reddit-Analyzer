@@ -112,7 +112,7 @@ inbox.on("item", async inbox => {
                 knowledgeBase["users"]["u/" + inbox.author.name] +
                 "\n\n^(I am a bot and this action was performed automatically | Check our) [^(GitHub repository)](https://github.com/CWKevo/Reddit-Analyzer) ^(to add your own descriptions to other subreddits.)"
             );
-        } else if (await !knowledgeBase["users"]["u/" + inbox.author.name]) {
+        } else if (!knowledgeBase["users"]["u/" + inbox.author.name]) {
             console.log(
                 "u/" +
                 inbox.author.name +
